@@ -1,11 +1,17 @@
 <template>
+
+  <div>
+    <!-- use v-bind to send states array to StateSummary -->
+    <state-summary v-bind:states=states></state-summary>
+  </div>
+
   <div class="state-list-container">
     <!-- display the data on the page -->
     <div class="state-container" v-for="state in states" v-bind:key="state.name">
       <!-- bind the state in the v-for loop to the state prop in StateDetail -->
       <state-detail
           v-bind:state="state"
-      v-on:update-visited="updateVisited">
+          v-on:update-visited="updateVisited">
       </state-detail>
     </div>
 
@@ -14,10 +20,14 @@
 
 <script>
 import StateDetail from "@/components/StateDetail.vue";
+import StateSummary from "@/components/StateSummary.vue";
 
 export default {
   name: "StateList",
-  components: {StateDetail},
+  components: {
+    StateDetail,
+    StateSummary
+  },
   data() {
     return {
       states: []
@@ -33,6 +43,10 @@ export default {
       this.$stateService.getAllStates().then( states => {
         this.states = states
       })
+          .catch( err => {
+            alert('Sorry, can\'t fetch state list')
+            console.error(err)
+          })
     },
     updateVisited(stateName, visited) {
       // call the setVisited function in stateService and send the state name and visited status
@@ -40,6 +54,10 @@ export default {
         // refresh the state list
         this.fetchAllStates()
       })
+          .catch( err => {
+            alert('Sorry, can\'t update state')
+            console.error(err)
+          })
     }
   }
 }

@@ -3,8 +3,17 @@ let express = require('express')
 // pull in the router
 let states_api = require('./routes/states')
 
+// import path library
+let path = require('path')
+
 // create web server app
 let app = express()
+
+// join the location of the code + client directory + dist directory
+let vueAppPath = path.join(__dirname, 'client', 'dist')
+
+// point to the Vue app
+app.use(express.static(vueAppPath))
 
 // set up the app to handle requests with json data
 app.use(express.json())

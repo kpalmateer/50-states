@@ -15,5 +15,10 @@ export default {
             // Vue component will receive and be able to parse the data
             return response.data
         })
+    },
+    getOneState(stateName) {
+        return axios.get('/api/state/' + stateName).then( response => {
+            return response.data
+        })
     }
 }

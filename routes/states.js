@@ -1,6 +1,7 @@
 // create routes from the app to the database
 
 let express = require('express')
+const {state} = require("pg/lib/native/query");
 
 // point to the States model
 let States = require('../models').States
@@ -8,13 +9,28 @@ let States = require('../models').States
 // create a router
 let router = express.Router()
 
-// use the router to get data from the database
+// use the router to get all states from the database
 router.get('/states', function (req, res, next) {
     // order by state name
     States.findAll({order: ['name']}).then( states => {
         return res.json(states)
     })
     // handle errors
+        .catch( err => next(err) )
+})
+
+// use the router to get a single state
+router.get('/state/:name', function (req, res, next) {
+    let stateName = req.params.name
+    States.findOne( {where: { name: stateName}})
+        .then( state => {
+            if (state) {
+                // convert to json and send to the client
+                return res.json(state)
+            } else {
+                return res.status(404).send('State not found')
+            }
+        })
         .catch( err => next(err) )
 })
 

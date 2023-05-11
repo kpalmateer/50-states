@@ -49,7 +49,8 @@ export default {
       }).catch( err => {
         // deal with 404 errors
         if ( err.response && err.response.status === 404 ) {
-          this.state.name = '???'
+          // redirect to the NotFound component page
+          this.$router.push({ name: 'NotFound' })
         } else {
           alert('Sorry - error fetching data about the state')
           console.error(err)

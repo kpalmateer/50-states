@@ -32,7 +32,7 @@ app.use(function (err, req, res, next) {
     res.status(500).send('Server error')
 })
 
-// start the app at the environment port or port 3000 if none is specified
+// start the app at the environment port or port 3000 (8080) if none is specified
 let server = app.listen(process.env.PORT || 3000, function () {
     console.log('server running on port ', server.address().port)
 })

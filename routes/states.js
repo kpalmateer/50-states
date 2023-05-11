@@ -1,7 +1,6 @@
 // create routes from the app to the database
 
 let express = require('express')
-const {state} = require("pg/lib/native/query");
 
 // point to the States model
 let States = require('../models').States
@@ -15,14 +14,14 @@ router.get('/states', function (req, res, next) {
     States.findAll({order: ['name']}).then( states => {
         return res.json(states)
     })
-    // handle errors
+        // handle errors
         .catch( err => next(err) )
 })
 
 // use the router to get a single state
 router.get('/state/:name', function (req, res, next) {
     let stateName = req.params.name
-    States.findOne( {where: { name: stateName}})
+    States.findOne( {where: { name: stateName }})
         .then( state => {
             if (state) {
                 // convert to json and send to the client
@@ -34,14 +33,24 @@ router.get('/state/:name', function (req, res, next) {
         .catch( err => next(err) )
 })
 
+// use the router to get visited states
+router.get('/states/visited', function (req, res, next) {
+    // create an array to hold the list of visited states
+    // findAll will return an array of states that have been visited
+    States.findAll( {where: { visited: true }})
+        .then ( states => {
+            return res.json(states)
+        })
+        .catch( err => next(err) )
+})
+
 // patch route to update the database
 router.patch( '/states/:name', function (req, res, next){
     // params will match the part of the URL using colon notation
-    let stateName = req.params.name
     // body will be a json object with the value held in visited
     let stateVisited = req.body.visited
 
-    States.update( { visited: stateVisited}, { where: { name: stateName}})
+    States.update( { visited: stateVisited }, { where: { name: stateName }})
         .then ( rowsUpdated => {
             let numberOfRowsUpdated = rowsUpdated[0]
             if (numberOfRowsUpdated == 1) {
